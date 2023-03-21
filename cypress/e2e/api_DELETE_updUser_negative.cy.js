@@ -4,7 +4,7 @@ describe('DELETE_negative test suite', () => {
     beforeEach(() => {
         cy.request({
             method: 'DELETE',
-            url: 'https://petstore.swagger.io/v2/user/passanger',
+            url: `${Cypress.env('baseUrl')}/${Cypress.env('BASE_PATH')}/unkown_user`,
             failOnStatusCode: false,
   
             headers: {
@@ -18,8 +18,12 @@ describe('DELETE_negative test suite', () => {
     it('should NOT delete created user', () => {
       cy.get('@delete_createdUser').then(response => {
         expect(response.status).to.equal(404)
-        expect(response.body).not.to.have.keys('message', 'status', 'code')
         expect(response).to.have.property('statusText', "Not Found")
+        expect(response.body).not.to.deep.eq({
+          "code": 200,
+          "type": "unknown",
+          "message": 'virtualriot' 
+        })
       })
     })
     
@@ -28,12 +32,7 @@ describe('DELETE_negative test suite', () => {
         expect(response.status).not.to.equal(400)
       })
     })
-    
-    it('should verify theres not internal server error', () => {
-      cy.get('@delete_createdUser').then(response => {
-        expect(response.status).not.to.equal(500)
-      })
-    })
+  
     
     
   })

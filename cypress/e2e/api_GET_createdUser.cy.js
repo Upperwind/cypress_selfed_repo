@@ -4,8 +4,8 @@ describe('GET test suite', () => {
     beforeEach(() => {
         cy.request({
             method: 'GET',
-            url: 'https://petstore.swagger.io/v2/user/Basic',
-            failOnStatusCode: false,
+            url: `${Cypress.env('baseUrl')}/${Cypress.env('BASE_PATH')}/virtualriot`,
+            
   
             headers: {
                 'Content-Type': 'application/json',
@@ -15,11 +15,21 @@ describe('GET test suite', () => {
         }).as('GET_createdUser')
     })
   
-    it('should create a new user', () => {
+    it('should GET an information about a new user', () => {
       cy.get('@GET_createdUser').then(response => {
         expect(response.status).to.equal(200)
         expect(response.body).to.have.all.keys('id', 'username', 'firstName', 'lastName', 'email', 'password', 'phone', 'userStatus')
-        expect(response.body).to.have.property('userStatus', 7, 'userName', "Basic")
+        expect(response.body).to.deep.eq({
+          "email": "stringers@gmail.com",
+          "firstName": 'Brooks',
+          "id": 15,
+          "lastName": 'Shape',
+          "password": 'basicpass1819',
+          "phone": '123451',
+          "userStatus": 7,
+          "username": 'virtualriot'
+
+        })
       })
     })
     
@@ -28,12 +38,7 @@ describe('GET test suite', () => {
         expect(response.status).not.to.equal(400)
       })
     })
-    
-    it('should verify theres not internal server error', () => {
-      cy.get('@GET_createdUser').then(response => {
-        expect(response.status).not.to.equal(500)
-      })
-    })
+
     
     
   })

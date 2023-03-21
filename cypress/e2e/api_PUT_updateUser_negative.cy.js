@@ -4,7 +4,7 @@ describe('negative PUT test suite', () => {
     beforeEach(() => {
         cy.request({
             method: 'PUT',
-            url: 'https://petstore.swagger.io/v2/user/unknown_user',
+            url: `${Cypress.env('baseUrl')}/${Cypress.env('BASE_PATH')}/unkown_user`,
             failOnStatusCode: false,
   
             headers: {
@@ -28,7 +28,11 @@ describe('negative PUT test suite', () => {
     it('should NOT update a new user', () => {
       cy.get('@UPD_createdUser_negative').then(response => {
         expect(response.status).to.equal(500)
-        expect(response.body).to.have.all.keys('code', 'message', 'type')
+        expect(response.body).to.deep.eq({
+          "code": 500,
+          "type": "unknown",
+          "message": 'something bad happened' 
+        })
         //expect(response.body).to.have.property('userStatus', 7, 'userName', "Basic")
       })
     })
@@ -39,12 +43,7 @@ describe('negative PUT test suite', () => {
         expect(response.body).to.have.property('message', 'something bad happened')
       })
     })
-    
-    it('should verify theres not internal server error', () => {
-      cy.get('@UPD_createdUser_negative').then(response => {
-        expect(response.status).not.to.equal(200)
-      })
-    })
+  
     
     
   })

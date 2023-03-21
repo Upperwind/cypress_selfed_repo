@@ -3,7 +3,7 @@ describe('POST_negative test suite', () => {
     beforeEach(() => {
         cy.request({
             method: 'POST',
-            url: 'https://petstore.swagger.io/v2/user/',
+            url: `${Cypress.env('baseUrl')}/${Cypress.env('BASE_PATH')}`,
             failOnStatusCode: false,
   
             headers: {
@@ -26,8 +26,14 @@ describe('POST_negative test suite', () => {
     it('should NOT create a new user', () => {
       cy.get('@userCreated_negative').then(response => {
         expect(response.status).to.equal(500)
-        expect(response.body).to.have.all.keys('code', 'message', 'type')
         expect(response.body).to.have.property('code', 500)
+        expect(response.body).to.deep.eq({
+          "code": 500,
+          "type": "unknown",
+          "message": 'something bad happened'
+          
+          
+        })
         
       })
     })
@@ -38,12 +44,7 @@ describe('POST_negative test suite', () => {
         expect(response.body).to.have.property('message', 'something bad happened')
       })
     })
-    
-    it('should verify bad request status', () => {
-      cy.get('@userCreated_negative').then(response => {
-        expect(response.status).not.to.equal(400)
-      })
-    })
+
     
     
   })

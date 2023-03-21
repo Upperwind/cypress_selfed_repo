@@ -3,9 +3,9 @@ describe('POST test suite', () => {
     beforeEach(() => {
         cy.request({
             method: 'POST',
-            url: 'https://petstore.swagger.io/v2/user/',
+            url: `${Cypress.env('baseUrl')}/${Cypress.env('BASE_PATH')}`,
             failOnStatusCode: false,
-  
+            
             headers: {
                 'Content-Type': 'application/json',
                 //'Authorization': `Bearer ${br_token}`
@@ -26,8 +26,14 @@ describe('POST test suite', () => {
     it('should create a new user', () => {
       cy.get('@userCreated').then(response => {
         expect(response.status).to.equal(200)
-        expect(response.body).to.have.all.keys('code', 'message', 'type')
-        expect(response.body).to.have.property('code', 200, 'message', 15)
+        expect(response.body).to.deep.eq({
+          "code": 200,
+          "type": "unknown",
+          "message": '15'
+          
+          
+        })
+        
       })
     })
     
@@ -36,12 +42,7 @@ describe('POST test suite', () => {
         expect(response.status).not.to.equal(400)
       })
     })
-    
-    it('should verify theres not internal server error', () => {
-      cy.get('@userCreated').then(response => {
-        expect(response.status).not.to.equal(500)
-      })
-    })
+
     
     
   })

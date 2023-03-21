@@ -4,7 +4,7 @@ describe('negative GET test suite', () => {
     beforeEach(() => {
         cy.request({
             method: 'GET',
-            url: 'https://petstore.swagger.io/v2/user/${userName}',
+            url: `${Cypress.env('baseUrl')}/${Cypress.env('BASE_PATH')}/unknown_user`,
             failOnStatusCode: false,
   
             headers: {
@@ -15,13 +15,18 @@ describe('negative GET test suite', () => {
         }).as('GET_createdUser')
     })
   
-    it('should NOT create a new user', () => {
+    it('should NOT GET an information about a new user', () => {
       cy.get('@GET_createdUser').then(response => {
         expect(response.status).to.equal(404)
-        expect(response.body).to.have.all.keys('code', 'message', 'type' )
-        expect(response.body).to.have.property('code', 1)
-        expect(response.body).to.have.property('type', 'error')
-        expect(response.body).to.have.property('message', 'User not found')
+        expect(response.body).to.deep.eq({
+          "code": 1,
+          "type": "error",
+          "message": 'User not found' 
+        })
+        //expect(response.body).to.have.all.keys('code', 'message', 'type' )
+        //expect(response.body).to.have.property('code', 1)
+        //expect(response.body).to.have.property('type', 'error')
+        //expect(response.body).to.have.property('message', 'User not found')
       })
     })
     
@@ -30,12 +35,5 @@ describe('negative GET test suite', () => {
         expect(response.status).not.to.equal(400)
       })
     })
-    
-    it('should verify theres not internal server error', () => {
-      cy.get('@GET_createdUser').then(response => {
-        expect(response.status).not.to.equal(500)
-      })
-    })
-    
     
   })

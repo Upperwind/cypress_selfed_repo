@@ -4,7 +4,7 @@ describe('PUT test suite', () => {
     beforeEach(() => {
         cy.request({
             method: 'PUT',
-            url: 'https://petstore.swagger.io/v2/user/${userName}',
+            url: `${Cypress.env('baseUrl')}/${Cypress.env('BASE_PATH')}/unit1`,
             failOnStatusCode: false,
   
             headers: {
@@ -13,7 +13,7 @@ describe('PUT test suite', () => {
             },
             body: {
                 "id": 15,
-                "username": "Basic",
+                "username": "virtualriot",
                 "firstName": "Brooks",
                 "lastName": "Shape",
                 "email": "stringers@gmail.com",
@@ -25,10 +25,14 @@ describe('PUT test suite', () => {
         }).as('UPD_createdUser')
     })
   
-    it('should create a new user', () => {
+    it('should UPDATE a new user', () => {
       cy.get('@UPD_createdUser').then(response => {
         expect(response.status).to.equal(200)
-        expect(response.body).to.have.all.keys('code', 'message', 'type')
+        expect(response.body).to.deep.eq({
+          "code": 200,
+          "type": "unknown",
+          "message": '15' 
+        })
         //expect(response.body).to.have.property('userStatus', 7, 'userName', "Basic")
       })
     })
@@ -36,12 +40,6 @@ describe('PUT test suite', () => {
     it('should verify bad request status absense', () => {
       cy.get('@UPD_createdUser').then(response => {
         expect(response.status).not.to.equal(400)
-      })
-    })
-    
-    it('should verify theres not internal server error', () => {
-      cy.get('@UPD_createdUser').then(response => {
-        expect(response.status).not.to.equal(500)
       })
     })
     
